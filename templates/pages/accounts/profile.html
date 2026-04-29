@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Профиль{% endblock %}
+{% block meta_description %}Личный профиль пользователя Arcane Store: персональные данные и статус аккаунта.{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+
+  <aside class="profile-hero" data-reveal>
+    <p class="profile-eyebrow">Arcane Account</p>
+    <h1 class="profile-title" data-reveal data-delay="1">
+      МОЙ
+      <span>ПРОФИЛЬ</span>
+    </h1>
+    <p class="profile-subtitle" data-reveal data-delay="2">
+      Здесь собраны ваши персональные данные и информация аккаунта.
+    </p>
+  </aside>
+
+  <div class="profile-wrap" data-reveal data-delay="2">
+    <div class="profile-card">
+      {% if messages %}
+        <div class="profile-messages" role="alert" aria-live="polite">
+          {% for message in messages %}
+            <p class="profile-message profile-message-{{ message.tags }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="profile-head">
+        <div class="profile-avatar-wrap">
+          {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="Аватар {{ request.user.username }}" class="profile-avatar">
+          {% else %}
+            <div class="profile-avatar profile-avatar-fallback" aria-hidden="true">{{ request.user.username|first|upper }}</div>
+          {% endif %}
+        </div>
+
+        <div>
+          <p class="profile-kicker">Аккаунт</p>
+          <h2 class="profile-name">{{ request.user.username }}</h2>
+          <p class="profile-email">{{ request.user.email|default:"Почта не указана" }}</p>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+        <div class="profile-item">
+          <p class="profile-label">Телефон</p>
+          <p class="profile-value">{{ profile.phone|default:"Не указан" }}</p>
+        </div>
+
+        <div class="profile-item">
+          <p class="profile-label">Город</p>
+          <p class="profile-value">{{ profile.city|default:"Не указан" }}</p>
+        </div>
+
+        <div class="profile-item">
+          <p class="profile-label">Дата рождения</p>
+          <p class="profile-value">{{ profile.date_of_birth|date:"d.m.Y"|default:"Не указана" }}</p>
+        </div>
+
+        <div class="profile-item">
+          <p class="profile-label">Дата регистрации</p>
+          <p class="profile-value">{{ request.user.date_joined|date:"d.m.Y" }}</p>
+        </div>
+      </div>
+
+      <div class="profile-bio">
+        <p class="profile-label">О себе</p>
+        <p class="profile-bio-text">{{ profile.bio|default:"Пока ничего не добавлено." }}</p>
+      </div>
+
+      <div class="profile-actions">
+        <a href="{% url 'catalog:category' %}" class="profile-btn profile-btn-primary">В КАТАЛОГ</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

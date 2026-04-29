@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Продавец{% endblock %}
+{% block meta_description %}Страница продавца и данных магазина.{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts/seller.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="seller-page">
+  <h1 class="seller-title">Профиль продавца</h1>
+
+  <div class="seller-card">
+    <p><strong>Название магазина:</strong> {{ seller_profile.0.shop_name|default:"Не указано" }}</p>
+    <p><strong>Категория товаров:</strong> {{ seller_profile.0.product_category|default:"Не указана" }}</p>
+
+    <hr class="seller-divider">
+
+    <h2 class="seller-subtitle">Связанный профиль</h2>
+    <p><strong>Пользователь:</strong> {{ seller_profile.0.user.user.username|default:"Не указан" }}</p>
+    <p><strong>Email:</strong> {{ seller_profile.0.user.user.email|default:"Не указан" }}</p>
+    <p><strong>Телефон:</strong> {{ seller_profile.0.user.phone|default:"Не указан" }}</p>
+    <p><strong>Город:</strong> {{ seller_profile.0.user.city|default:"Не указан" }}</p>
+  </div>
+</section>
+{% endblock %}

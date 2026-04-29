@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mptt_tags %}
+
+{% block title %}{{ category.name }} — Arcane Store{% endblock %}
+{% block meta_description %}{{ category.name }} — каталог Arcane Store.{% endblock %}
+
+{% block css %}
+  {# Подключаем оба CSS — общий и для этой страницы #}
+  <link rel="stylesheet" href="{% static 'css/pages/catalog/category_list.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages/catalog/category_child_list.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ─── Header ───────────────────────────────────────────────── -->
+<div class="categories-header child-header">
+
+  {# Хлебные крошки #}
+  <nav class="breadcrumbs" aria-label="Навигация">
+    <a href="/" class="bc-item">Главная</a>
+    <span class="bc-sep">/</span>
+    <a href="{% url 'catalog:category' %}" class="bc-item">Каталог</a>
+
+    {% for crumb in breadcrumbs %}
+      <span class="bc-sep">/</span>
+      {% if forloop.last %}
+        {# Последний элемент — не ссылка, это текущая страница #}
+        <span class="bc-item bc-current">{{ crumb.name }}</span>
+      {% else %}
+        <a href="{{ crumb.get_absolute_url }}" class="bc-item">{{ crumb.name }}</a>
+      {% endif %}
+    {% endfor %}
+  </nav>
+  {% if category.parent %}
+    <a href="{% url 'catalog:category-child' slug=category.parent.slug %}" class="categories-eyebrow" data-reveal>
+      {{ category.parent.name }}
+    </a>
+  {% else %}
+    <p class="categories-eyebrow" data-reveal>
+      Arcane Storee
+    </p>
+  {% endif %}
+  {% comment %} <p class="categories-eyebrow" data-reveal>
+    {# Показываем путь через родителя, если он есть #}
+    {% if category.parent %}
+      {{ category.parent.name }}
+    {% else %}
+      Arcane Store
+    {% endif %}
+  </p> {% endcomment %}
+
+  <h1 class="categories-title" data-reveal data-delay="1">
+    {{ category.name|upper|slice:":10" }}
+    {# Если имя длинное — разбиваем на две строки визуально #}
+    {% if category.name|length > 10 %}
+      <span>{{ category.name|upper|slice:"10:" }}</span>
+    {% endif %}
+  </h1>
+
+</div>
+
+
+<!-- ─── Body ─────────────────────────────────────────────────── -->
+<div class="categories-body">
+
+  {% if has_children %}
+  <!-- ── Режим 1: показываем подкатегории ───────────────────── -->
+
+    <div class="child-grid" data-reveal>
+      {% for node in items %}
+
+        <a href="{{ node.get_absolute_url }}"
+           class="child-cat-card {% if node.is_leaf_node %}is-leaf{% endif %}"
+           style="text-decoration:none;">
+
+          <!-- Изображение или плейсхолдер -->
+          <div class="root-cat-image">
+            {% if node.image %}
+              <img src="{{ node.image.url }}" alt="{{ node.name }}" loading="lazy">
+            {% else %}
+              <div class="root-cat-placeholder">
+                {{ node.name|slice:":2"|upper }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Информация -->
+          <div class="root-cat-info">
+            <p class="root-cat-number">{{ forloop.counter|stringformat:"02d" }}</p>
+
+            <p class="root-cat-name">
+              {{ node.name }}
+              <svg width="16" height="16" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="7" y1="17" x2="17" y2="7"/>
+                <polyline points="7 7 17 7 17 17"/>
+              </svg>
+            </p>
+
+            {# Если у подкатегории ещё есть дети — показываем их превью списком #}
+            {% if not node.is_leaf_node %}
+              <ul class="children-list">
+                {% for child in node.get_children %}
+                  <li class="child-row">
+
+                    <div class="child-row-left">
+                      <span class="child-dot"></span>
+                      <span class="child-name">{{ child.name }}</span>
+                    </div>
+
+                    <svg class="child-arrow" width="12" height="12"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                      <line x1="7" y1="17" x2="17" y2="7"/>
+                      <polyline points="7 7 17 7 17 17"/>
+                    </svg>
+
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <span class="cat-link-all">Смотреть товары →</span>
+            {% endif %}
+
+          </div>
+
+        </a>
+
+      {% empty %}
+        <div class="categories-empty">
+          <div class="categories-empty-char">∅</div>
+          <h2>Подкатегорий пока нет</h2>
+          <p>Загляните позже — скоро здесь всё появится.</p>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+  <!-- ── Режим 2: показываем товары (листовая категория) ─────── -->
+
+    <div class="product-grid" data-reveal>
+      {% for product in items %}
+
+        <a href="{% url 'catalog:product_detail' slug=product.slug %}"
+           class="product-card" style="text-decoration:none;">
+
+          <div class="root-cat-image">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+            {% else %}
+              <div class="root-cat-placeholder">
+                {{ product.name|slice:":2"|upper }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="root-cat-info">
+            <p class="root-cat-number">{{ forloop.counter|stringformat:"02d" }}</p>
+            <p class="root-cat-name">
+              {{ product.name }}
+              <svg width="16" height="16" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="7" y1="17" x2="17" y2="7"/>
+                <polyline points="7 7 17 7 17 17"/>
+              </svg>
+            </p>
+            {# Сюда можно добавить цену, артикул и т.д. #}
+          </div>
+
+        </a>
+
+      {% empty %}
+        <div class="categories-empty">
+          <div class="categories-empty-char">∅</div>
+          <h2>Товаров пока нет</h2>
+          <p>Загляните позже — скоро здесь всё появится.</p>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% endif %}
+
+  <!-- ─── Pagination ──────────────────────────────────────── -->
+  {% if is_paginated %}
+    <nav class="categories-pagination" aria-label="Страницы">
+
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="page-btn arrow" style="opacity:0.3;pointer-events:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </span>
+      {% endif %}
+
+      {% for num in paginator_range %}
+        {% if num == page_obj.ELLIPSIS %}
+          <span class="page-ellipsis">···</span>
+        {% elif num == page_obj.number %}
+          <span class="page-btn active">{{ num }}</span>
+        {% else %}
+          <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="page-btn arrow" style="opacity:0.3;pointer-events:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </span>
+      {% endif %}
+
+    </nav>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block meta_description %}Весь ассортимент Arcane — минималистичный дизайн, максимальное качество.{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/catalog/product_list.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ─── Page Header ───────────────────────────────────────────── -->
+<div class="catalog-header">
+  <p class="catalog-eyebrow" data-reveal>Arcane Store</p>
+  <h1 class="catalog-title" data-reveal data-delay="1">
+    ВСЕ
+    <span>ТОВАРЫ</span>
+  </h1>
+</div>
+
+
+<!-- ─── Catalog Body ──────────────────────────────────────────── -->
+<div class="catalog-body">
+
+  <!-- Toolbar -->
+  <div class="catalog-toolbar" data-reveal>
+
+    <p class="catalog-count">
+      Найдено: <strong>{{ paginator.count }}</strong> товаров
+    </p>
+
+    <div class="toolbar-right">
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="grid" aria-label="Сетка">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3"  y="3"  width="7" height="7" rx="1"/>
+            <rect x="14" y="3"  width="7" height="7" rx="1"/>
+            <rect x="3"  y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </button>
+        <button class="view-btn" data-view="list" aria-label="Список">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6"  x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Products Grid -->
+  <div class="products-grid" id="productsGrid">
+
+    {% for product in products %}
+
+      <a
+        href="{{ product.get_absolute_url }}"
+        class="product-card"
+        data-reveal
+        data-delay="{{ forloop.counter0|divisibleby:4|yesno:'1,2' }}"
+      >
+
+        <!-- Image -->
+        <div class="card-image">
+
+          {% if product.image %}
+            <img
+              src="{{ product.image.url }}"
+              alt="{{ product.name }}"
+              loading="{% if forloop.counter <= 4 %}eager{% else %}lazy{% endif %}"
+            >
+          {% else %}
+            <div class="card-no-image">
+              {{ product.name|slice:":3"|upper }}
+            </div>
+          {% endif %}
+
+          <!-- Stock badge -->
+          {% if product.avaible %}
+            {% if product.stock <= 5 and product.stock > 0 %}
+              <span class="card-stock-badge badge-low-stock">Осталось {{ product.stock }}</span>
+            {% endif %}
+          {% endif %}
+
+          <!-- Out of stock -->
+          {% if not product.avaible or product.stock == 0 %}
+            <div class="card-out-of-stock">
+              <span>Нет в наличии</span>
+            </div>
+          {% endif %}
+
+          <!-- Hover overlay (только если есть в наличии) -->
+          {% if product.avaible and product.stock > 0 %}
+            <div class="card-overlay">
+              <button class="overlay-cart-btn">В КОРЗИНУ</button>
+            </div>
+          {% endif %}
+
+        </div>
+
+        <!-- Info -->
+        <div class="card-info">
+
+          <p class="card-category">{{ product.category.name }}</p>
+
+          <p class="card-name">{{ product.name }}</p>
+
+          <!-- Description (видна только в list-view) -->
+          {% if product.description %}
+            <p class="card-description">{{ product.description|truncatewords:18 }}</p>
+          {% endif %}
+
+          <!-- Tags -->
+          {% if product.tags.all %}
+            <div class="card-tags">
+              {% for tag in product.tags.all|slice:":3" %}
+                <span class="card-tag">{{ tag.name }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="card-bottom">
+
+            {% if product.avaible and product.stock > 0 %}
+              <p class="card-price">{{ product.price|floatformat:0 }} ₽</p>
+            {% else %}
+              <p class="card-price-unavailable">Нет в наличии</p>
+            {% endif %}
+
+            {% if product.stock > 5 %}
+              <p class="card-stock">{{ product.stock }} шт.</p>
+            {% elif product.stock > 0 %}
+              <p class="card-stock low">{{ product.stock }} шт.</p>
+            {% endif %}
+
+          </div>
+
+        </div>
+      </a>
+
+    {% empty %}
+      <div class="catalog-empty">
+        <div class="catalog-empty-char">∅</div>
+        <h2>Товаров пока нет</h2>
+        <p>Загляните позже — скоро здесь появятся новинки.</p>
+      </div>
+    {% endfor %}
+
+  </div>
+
+  <!-- ─── Pagination ────────────────────────────────────────── -->
+  {% if is_paginated %}
+    <nav class="catalog-pagination" aria-label="Страницы каталога">
+
+      <!-- Назад -->
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn arrow" aria-label="Предыдущая">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="page-btn arrow" style="opacity:0.3; pointer-events:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </span>
+      {% endif %}
+
+      <!-- Номера страниц (используем paginator_range из вьюхи) -->
+      {% for num in paginator_range %}
+        {% if num == page_obj.ELLIPSIS %}
+          <span class="page-ellipsis">···</span>
+        {% elif num == page_obj.number %}
+          <span class="page-btn active">{{ num }}</span>
+        {% else %}
+          <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Вперёд -->
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn arrow" aria-label="Следующая">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="page-btn arrow" style="opacity:0.3; pointer-events:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </span>
+      {% endif %}
+
+    </nav>
+  {% endif %}
+
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+  <script src="{% static 'js/pages/catalog/product_list.js' %}"></script>
+{% endblock %}

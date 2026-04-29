@@ -1,0 +1,475 @@
+/* ─── Category Tree Page ─────────────────────────────────────── */
+
+/* ─── Page Header ────────────────────────────────────────────── */
+.categories-header {
+  padding: 80px 40px 60px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.categories-header::after {
+  content: 'CAT';
+  position: absolute;
+  right: -0.05em;
+  bottom: -0.15em;
+  font-family: var(--font-display);
+  font-size: 22rem;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.3;
+}
+
+.categories-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--lime);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.categories-eyebrow::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--lime);
+}
+
+.categories-title {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 9vw, 10rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+.categories-title span { color: var(--lime); display: block; }
+
+/* ─── Body ───────────────────────────────────────────────────── */
+.categories-body {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px 100px;
+}
+
+/* ─── Root grid ──────────────────────────────────────────────── */
+.root-categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+/* ─── Root Category Card ─────────────────────────────────────── */
+.root-cat-card {
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  transition: background 0.4s;
+}
+
+.root-cat-card:last-child { border-right: none; }
+
+/* Image */
+.root-cat-image {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--bg-3);
+}
+
+.root-cat-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5) saturate(0.7);
+  transition: transform 1.4s var(--ease-slow), filter 0.6s;
+}
+
+.root-cat-card:hover .root-cat-image img {
+  transform: scale(1.07);
+  filter: brightness(0.3) saturate(0.5);
+}
+
+.root-cat-image::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--lime);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease-slow);
+}
+
+.root-cat-card:hover .root-cat-image::after { transform: scaleX(1); }
+
+/* Placeholder */
+.root-cat-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 5rem;
+  color: var(--border);
+  letter-spacing: 0.05em;
+  user-select: none;
+  transition: color 0.6s, transform 1.4s var(--ease-slow);
+}
+
+.root-cat-card:hover .root-cat-placeholder {
+  color: rgba(212, 255, 0, 0.06);
+  transform: scale(1.04);
+}
+
+/* Info */
+.root-cat-info {
+  padding: 22px 24px 26px;
+}
+
+.root-cat-number {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--border);
+  margin-bottom: 6px;
+  transition: color 0.3s;
+}
+
+.root-cat-card:hover .root-cat-number { color: var(--lime); }
+
+.root-cat-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: color 0.35s;
+}
+
+.root-cat-card:hover .root-cat-name { color: var(--lime); }
+
+.root-cat-name svg {
+  flex-shrink: 0;
+  color: var(--lime);
+  opacity: 0;
+  transform: translate(-6px, 6px);
+  transition: opacity 0.4s, transform 0.4s var(--ease-spring);
+}
+
+.root-cat-card:hover .root-cat-name svg { opacity: 1; transform: translate(0, 0); }
+
+/* ─── Children inside card ───────────────────────────────────── */
+.children-list {
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Каждая дочерняя строка — ссылка */
+.child-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(34, 34, 34, 0.7);
+  text-decoration: none;
+  cursor: none;
+  position: relative;
+  transition: padding-left 0.4s var(--ease-slow);
+}
+
+.child-row:last-child { border-bottom: none; }
+
+/* Подсветка строки */
+.child-row::before {
+  content: '';
+  position: absolute;
+  left: -24px; right: -24px;
+  top: 0; bottom: 0;
+  background: rgba(212, 255, 0, 0.04);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-slow);
+}
+
+.child-row:hover::before { transform: scaleX(1); }
+.child-row:hover { padding-left: 6px; }
+
+.child-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+/* Отступ по глубине (задаём инлайном через style="--depth:N") */
+.child-indent {
+  display: block;
+  flex-shrink: 0;
+  width: calc(var(--depth, 0) * 14px);
+}
+
+/* Маркер */
+.child-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.3s, transform 0.3s var(--ease-spring);
+}
+
+/* Вложенный маркер — квадрат */
+.child-row.is-deep .child-dot {
+  border-radius: 1px;
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.child-row:hover .child-dot { background: var(--lime); transform: scale(1.5); }
+.child-row.is-deep:hover .child-dot { border-color: var(--lime); background: var(--lime); }
+
+/* Имя */
+.child-name {
+  font-size: 0.82rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s;
+}
+
+.child-row.is-deep .child-name { font-size: 0.74rem; opacity: 0.75; }
+.child-row:hover .child-name { color: var(--white); }
+
+/* Стрелка */
+.child-arrow {
+  position: relative;
+  z-index: 1;
+  color: var(--border);
+  opacity: 0;
+  transform: translateX(-6px);
+  flex-shrink: 0;
+  transition: opacity 0.3s, transform 0.4s var(--ease-spring), color 0.3s;
+}
+
+.child-row:hover .child-arrow { opacity: 1; transform: translateX(0); color: var(--lime); }
+
+/* "Смотреть все товары" — если у категории нет детей */
+.cat-link-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lime);
+  text-decoration: none;
+  cursor: none;
+  transition: gap 0.4s var(--ease-spring);
+}
+
+.cat-link-all:hover { gap: 14px; }
+
+/* ─── Empty ──────────────────────────────────────────────────── */
+.categories-empty {
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.categories-empty-char {
+  font-family: var(--font-display);
+  font-size: 8rem;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 24px;
+}
+
+.categories-empty h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.categories-empty p { font-size: 0.85rem; color: var(--muted); }
+
+/* ─── Pagination ─────────────────────────────────────────────── */
+.categories-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+
+.page-btn {
+  min-width: 42px; height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; letter-spacing: 0.1em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  transition: all 0.35s var(--ease-slow);
+  cursor: none;
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+.page-btn:hover       { border-color: var(--white); color: var(--white); }
+.page-btn.active      { background: var(--lime); border-color: var(--lime); color: var(--bg); font-weight: 700; }
+.page-btn.arrow:hover { border-color: var(--lime); color: var(--lime); }
+
+.page-ellipsis {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--border);
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  height: 42px;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .root-categories { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .categories-header { padding: 60px 20px 40px; }
+  .categories-body   { padding: 0 20px 80px; }
+  .root-categories   { grid-template-columns: 1fr; }
+  .root-cat-card     { border-right: none; border-bottom: 1px solid var(--border); }
+  .categories-header::after { font-size: 8rem; }
+}
+a.root-cat-card {
+  display: block;
+  color: inherit;
+}
+/* ─── Breadcrumbs ─────────────────────────────────────────────── */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.bc-item {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.bc-item:hover { color: var(--white); }
+
+/* Текущая страница — не ссылка, выделена лаймом */
+.bc-item.bc-current { color: var(--lime); }
+
+.bc-sep {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--border);
+}
+
+/* ─── Child header — немного компактнее корневого ─────────────── */
+.child-header {
+  padding: 60px 40px 50px; /* меньше чем у root */
+}
+
+/* Фоновая надпись подстраивается под имя категории */
+.child-header::after {
+  content: attr(data-bg-text); /* задаём через JS или хардкодим */
+  font-size: 18rem;
+}
+
+/* ─── Child grid (такой же как root, но чуть гибче) ──────────── */
+.child-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 0;
+}
+
+/* Карточка дочерней категории — наследует стили root-cat-card */
+.child-cat-card {
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  transition: background 0.4s;
+  display: block;
+  color: inherit;
+}
+
+.child-cat-card:last-child { border-right: none; }
+
+/* Те же hover-эффекты что у root-cat-card */
+.child-cat-card:hover .root-cat-image img {
+  transform: scale(1.07);
+  filter: brightness(0.3) saturate(0.5);
+}
+.child-cat-card:hover .root-cat-image::after { transform: scaleX(1); }
+.child-cat-card:hover .root-cat-number { color: var(--lime); }
+.child-cat-card:hover .root-cat-name { color: var(--lime); }
+.child-cat-card:hover .root-cat-name svg { opacity: 1; transform: translate(0,0); }
+
+/* ─── Product grid ────────────────────────────────────────────── */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.product-card {
+  display: block;
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  transition: background 0.4s;
+  color: inherit;
+}
+
+.product-card:last-child { border-right: none; }
+.product-card:hover .root-cat-name { color: var(--lime); }
+.product-card:hover .root-cat-name svg { opacity: 1; transform: translate(0,0); }
+
+/* ─── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .child-grid,
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .child-header { padding: 50px 20px 36px; }
+  .child-grid,
+  .product-grid { grid-template-columns: 1fr; }
+  .child-cat-card,
+  .product-card  { border-right: none; border-bottom: 1px solid var(--border); }
+}

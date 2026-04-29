@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+{% load mptt_tags %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block meta_description %}Все категории Arcane Store — найди свой раздел.{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/catalog/category_list.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ─── Header ───────────────────────────────────────────────── -->
+<div class="categories-header">
+  <p class="categories-eyebrow" data-reveal>Arcane Store</p>
+  <h1 class="categories-title" data-reveal data-delay="1">
+    ВЫБЕРИ
+    <span>РАЗДЕЛ</span>
+  </h1>
+</div>
+
+
+<!-- ─── Body ─────────────────────────────────────────────────── -->
+<div class="categories-body">
+
+  {% if category %}
+
+    <div class="root-categories" data-reveal>
+      {% for node in category %}
+        {% if node.is_root_node %}
+
+          <!-- ── Корневая категория ────────────────────────────── -->
+          {% if node.is_leaf_node %}
+            {# Нет детей — сразу в товары #}
+            <a href="{% url 'catalog:product_list' %}?category={{ node.slug }}"
+               class="root-cat-card" style="text-decoration:none;">
+          {% else %}
+            {# Есть дети — на страницу подкатегорий #}
+            <a href="{{ node.get_absolute_url }}"
+               class="root-cat-card" style="text-decoration:none;">
+          {% endif %}
+
+            <div class="root-cat-image">
+              {% if node.image %}
+                <img src="{{ node.image.url }}" alt="{{ node.name }}" loading="lazy">
+              {% else %}
+                <div class="root-cat-placeholder">{{ node.name|slice:":2"|upper }}</div>
+              {% endif %}
+            </div>
+
+            <div class="root-cat-info">
+              <p class="root-cat-number">{{ forloop.counter|stringformat:"02d" }}</p>
+
+              <p class="root-cat-name">
+                {{ node.name }}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <line x1="7" y1="17" x2="17" y2="7"/>
+                  <polyline points="7 7 17 7 17 17"/>
+                </svg>
+              </p>
+
+              {% if node.is_leaf_node %}
+                <span class="cat-link-all">Смотреть товары →</span>
+              {% else %}
+                <span class="cat-link-all">Смотреть разделы →</span>
+              {% endif %}
+            </div>
+
+          </a>
+
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  {% else %}
+
+    <div class="categories-empty">
+      <div class="categories-empty-char">∅</div>
+      <h2>Категорий пока нет</h2>
+      <p>Загляните позже — скоро здесь всё появится.</p>
+    </div>
+
+  {% endif %}
+
+  <!-- ─── Pagination ──────────────────────────────────────── -->
+  {% if is_paginated %}
+    <nav class="categories-pagination" aria-label="Страницы категорий">
+
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="page-btn arrow" style="opacity:0.3; pointer-events:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </span>
+      {% endif %}
+
+      {% for num in paginator_range %}
+        {% if num == page_obj.ELLIPSIS %}
+          <span class="page-ellipsis">···</span>
+        {% elif num == page_obj.number %}
+          <span class="page-btn active">{{ num }}</span>
+        {% else %}
+          <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="page-btn arrow" style="opacity:0.3; pointer-events:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </span>
+      {% endif %}
+
+    </nav>
+  {% endif %}
+
+</div>
+
+{% endblock %}

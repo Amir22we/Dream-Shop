@@ -1,0 +1,112 @@
+{% load static %}
+
+<header class="site-header" id="siteHeader">
+
+  <!-- ─── Ticker ─────────────────────────────────────────────── -->
+  <div class="header-ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">
+        Бесплатная доставка от 5 000 ₽
+        <span class="ticker-dot"></span>
+      </span>
+      <span class="ticker-item">
+        Новая коллекция уже доступна
+        <span class="ticker-dot"></span>
+      </span>
+      <span class="ticker-item">
+        Гарантия 2 года на все товары
+        <span class="ticker-dot"></span>
+      </span>
+      <span class="ticker-item">
+        -15% при первом заказе — ARCANE15
+        <span class="ticker-dot"></span>
+      </span>
+      <span class="ticker-item">
+        Возврат в течение 30 дней
+        <span class="ticker-dot"></span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ─── Main Bar ───────────────────────────────────────────── -->
+  <div class="header-main">
+
+    <!-- Logo -->
+    <a href="#" class="header-logo">
+      ARC<span>.</span>ANE
+    </a>
+
+    <!-- Navigation -->
+    <nav class="header-nav" aria-label="Основная навигация">
+      <a href="" class="nav-link {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}">
+        Каталог
+      </a>
+      <a href="" class="nav-link {% if request.resolver_match.url_name == 'collections' %}active{% endif %}">
+        Коллекции
+      </a>
+      <a href="" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+        О нас
+      </a>
+      <a href="" class="nav-link {% if request.resolver_match.url_name == 'blog' %}active{% endif %}">
+        Блог
+      </a>
+    </nav>
+
+    <!-- Actions -->
+    <div class="header-actions">
+
+      <!-- Search -->
+      <a href="" class="header-icon-btn" aria-label="Поиск">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      </a>
+
+      <!-- Profile -->
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}" class="header-icon-btn" aria-label="Профиль">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" class="header-icon-btn" aria-label="Войти">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      <!-- Wishlist -->
+      <a href="" class="header-icon-btn" aria-label="Избранное">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </a>
+
+      <!-- Cart -->
+      <a href="" class="header-icon-btn" aria-label="Корзина">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        {% if cart_count %}
+          <span class="cart-count">{{ cart_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button class="nav-toggle" aria-label="Меню" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+</header>
