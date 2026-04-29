@@ -21,4 +21,4 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Seller)
 class sellerAdmin(admin.ModelAdmin):
-    list_display = ['user', 'product_category', 'shop_name']
+    list_display = ['profile', 'product_category', 'shop_name']

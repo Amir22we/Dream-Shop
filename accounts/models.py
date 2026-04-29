@@ -11,11 +11,9 @@ class Profile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return str(self.user)
     
 class Seller(models.Model):
-    user = models.OneToOneField(to=Profile, on_delete=models.CASCADE, related_name='seller', verbose_name='Продовец')
+    profile = models.OneToOneField(to=Profile, on_delete=models.CASCADE, related_name='seller', verbose_name='Продовец')
     product_category = models.CharField(max_length=100, blank=True,  verbose_name='Категория товаров')
     shop_name = models.CharField(max_length=100, blank=True, verbose_name='Название магазина')  
     is_approved = models.BooleanField(null=True)

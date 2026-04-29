@@ -11,4 +11,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Profile)
 def create_seller_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        Seller.objects.create(profile=instance)
