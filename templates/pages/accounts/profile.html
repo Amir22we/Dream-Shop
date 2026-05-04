@@ -83,9 +83,15 @@
         <a href="{% url 'accounts:logout' %}" class="profile-btn profile-btn-primary">ВЫЙТИ С АККАУНТА</a>
       </div>
       <br>
-      <div class="profile-actions">
-        <a href="{% url 'accounts:logout' %}" class="profile-btn profile-btn-primary">ЗАРЕГИСТРИРОВАТЬСЯ КАК ПРОДАВЕЦ</a>
-      </div>
+      {% if request.user.profile.is_seller %}
+        <div class="profile-actions">
+          <a href="{% url 'accounts:seller_profile' %}" class="profile-btn profile-btn-primary">ПРОФИЛЬ ПРОДАВЦА</a>
+        </div>
+      {% else %}
+        <div class="profile-actions">
+          <a href="{% url 'accounts:seller_register' %}" class="profile-btn profile-btn-primary">ЗАРЕГИСТРИРОВАТЬСЯ КАК ПРОДАВЕЦ</a>
+        </div>
+      {% endif %}
     </div>
   </div>
 

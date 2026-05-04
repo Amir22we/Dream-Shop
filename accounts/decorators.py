@@ -21,3 +21,4 @@ def anonymus_required(view_func):
             return redirect('accounts:profile')
         return view_func(request, *args, **kwargs)
     return _wrapped_view
+

@@ -1,28 +1,96 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Продавец{% endblock %}
-{% block meta_description %}Страница продавца и данных магазина.{% endblock %}
+{% block title %}Стать продавцом{% endblock %}
+{% block meta_description %}Профиль продавца и заявка на регистрацию магазина в Arcane Store.{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/pages/accounts/seller.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages/accounts/register_form.css' %}">
 {% endblock %}
 
 {% block content %}
 <section class="seller-page">
-  <h1 class="seller-title">Профиль продавца</h1>
-
-  <div class="seller-card">
-    <p><strong>Название магазина:</strong> {{ seller_profile.0.shop_name|default:"Не указано" }}</p>
-    <p><strong>Категория товаров:</strong> {{ seller_profile.0.product_category|default:"Не указана" }}</p>
-
-    <hr class="seller-divider">
-
-    <h2 class="seller-subtitle">Связанный профиль</h2>
-    <p><strong>Пользователь:</strong> {{ seller_profile.0.user.user.username|default:"Не указан" }}</p>
-    <p><strong>Email:</strong> {{ seller_profile.0.user.user.email|default:"Не указан" }}</p>
-    <p><strong>Телефон:</strong> {{ seller_profile.0.user.phone|default:"Не указан" }}</p>
-    <p><strong>Город:</strong> {{ seller_profile.0.user.city|default:"Не указан" }}</p>
+  <div class="register-hero" data-reveal>
+    <p class="register-eyebrow">Arcane Store</p>
+    <h1 class="register-title" data-reveal data-delay="1">
+      МОЙ
+      <span>МАГАЗИН</span>
+    </h1>
+    <p class="register-subtitle" data-reveal data-delay="2">
+      Управляйте данными магазина и подайте заявку на статус продавца.
+    </p>
   </div>
+
+  <div class="seller-card" data-reveal data-delay="2">
+    <h2 class="seller-subtitle">Данные магазина</h2>
+
+    {% if seller_profile %}
+      <p><strong>Название магазина:</strong> {{ seller_profile.shop_name|default:"Не указано" }}</p>
+      <p><strong>Категория товаров:</strong> {{ seller_profile.product_category|default:"Не указана" }}</p>
+      <p>
+        <strong>Статус заявки:</strong>
+        {% if seller_profile.is_approved is True %}
+          Подтверждена
+        {% elif seller_profile.is_approved is False %}
+          Отклонена
+        {% else %}
+          На модерации
+        {% endif %}
+      </p>
+
+      <hr class="seller-divider">
+
+      <h2 class="seller-subtitle">Контакты профиля</h2>
+      <p><strong>Пользователь:</strong> {{ seller_profile.profile.user.username|default:"Не указан" }}</p>
+      <p><strong>Email:</strong> {{ seller_profile.profile.user.email|default:"Не указан" }}</p>
+      <p><strong>Телефон:</strong> {{ seller_profile.profile.phone|default:"Не указан" }}</p>
+      <p><strong>Город:</strong> {{ seller_profile.profile.city|default:"Не указан" }}</p>
+    {% else %}
+      <p>Пока нет данных магазина. Заполните форму заявки.</p>
+    {% endif %}
+  </div>
+
+  {% if form %}
+    <div class="seller-card" data-reveal data-delay="3">
+      <p class="register-card-kicker">Заявка</p>
+      <h2 class="register-card-title">Стать продавцом</h2>
+
+      {% if form.non_field_errors %}
+        <div class="form-alert" role="alert">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate class="register-form" id="sellerRegisterForm">
+        {% csrf_token %}
+
+        {% for field in form %}
+          <div class="form-group{% if field.errors %} has-error{% endif %}">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+
+            {% if field.help_text %}
+              <p class="form-help">{{ field.help_text|safe }}</p>
+            {% endif %}
+
+            {% if field.errors %}
+              <ul class="field-errors">
+                {% for error in field.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <button type="submit" class="submit-btn">
+          <span>ОТПРАВИТЬ ЗАЯВКУ</span>
+        </button>
+      </form>
+    </div>
+  {% endif %}
 </section>
 {% endblock %}

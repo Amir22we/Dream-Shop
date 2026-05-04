@@ -62,12 +62,11 @@ class UserLoginForm(AuthenticationForm):
 class RegisterSellerForm(forms.ModelForm):
     product_category = forms.CharField(max_length=100)
     shop_name = forms.CharField(max_length=100)
-
     class Meta:
-        model = User
-        fields = ['username', 'email']
+        model = Seller
+        fields = ['product_category', 'shop_name']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].label = 'юзер епта'
-        self.fields['email'].label = 'почту нахуй'
+        self.fields['product_category'].label = 'категория товаров'
+        self.fields['shop_name'].label = 'имя магазина'

@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from accounts.decorators import seller_required, anonymus_required
-from .mixins import AnonymousRequired
+from .mixins import AnonymousRequired, LoginRequiredMixin
 
 class UserRegisterView(AnonymousRequired, CreateView):
     form_class = UserRegisterForm
@@ -47,20 +47,28 @@ def profile_view(request):
     profile, _ = Profile.objects.get_or_create(user=request.user)
     return render(request, 'pages/accounts/profile.html', {'profile': profile})
 
-@login_required
-class SellerRegisterView(CreateView):
+class SellerRegisterView(LoginRequiredMixin, CreateView):
     form_class = RegisterSellerForm
-    success_url = reverse_lazy('catalog:category')
-    template_name = ''
+    success_url = reverse_lazy('accounts:seller_profile')
+    template_name = 'pages/accounts/seller_register.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Страница регистрации продавцов'
         return context
 
+    def form_valid(self, form):
+        profile, _ = Profile.objects.get_or_create(user=self.request.user)
+        seller = form.save(commit=False)
+        seller.profile = profile
+        seller.is_approved = None
+        seller.save()
+        self.object = seller
+        return redirect(self.get_success_url())
+
 @seller_required
 def seller_profile_view(request):
-    seller_profile, _ = Seller.objects.get_or_create(user=request.user.profile)
+    seller_profile, _ = Seller.objects.get_or_create(profile=request.user.profile)
     return render(request, 'pages/accounts/seller.html', {'seller_profile': seller_profile})
 
 @login_required

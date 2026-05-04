@@ -8,7 +8,3 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
-@receiver(post_save, sender=Profile)
-def create_seller_profile(sender, instance, created, **kwargs):
-    if created:
-        Seller.objects.create(profile=instance)
