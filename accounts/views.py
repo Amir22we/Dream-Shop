@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
 from .models import Profile, Seller
-from .forms import UserRegisterForm, UserLoginForm, RegisterSellerForm
+from .forms import UserRegisterForm, UserLoginForm, RegisterSellerForm, ProfileUpdateForm, SellerProfileUpdateForm
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import View, DetailView, CreateView
+from django.views.generic import View, DetailView, CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from accounts.decorators import seller_required, anonymus_required
-from .mixins import AnonymousRequired, LoginRequiredMixin
+from .mixins import AnonymousRequiredMixin, LoginRequiredMixin, SellerRequiredMixin
 
-class UserRegisterView(AnonymousRequired, CreateView):
+class UserRegisterView(AnonymousRequiredMixin, CreateView):
     form_class = UserRegisterForm
     template_name = 'pages/accounts/register_form.html'
 
@@ -32,7 +32,7 @@ class UserRegisterView(AnonymousRequired, CreateView):
         profile.save()
         return redirect(self.get_success_url())
 
-class UserLoginView(AnonymousRequired, LoginView):
+class UserLoginView(AnonymousRequiredMixin, LoginView):
     form_class = UserLoginForm
     success_url = reverse_lazy('accounts:profile')
     template_name = 'pages/accounts/login_form.html'
@@ -75,4 +75,48 @@ def seller_profile_view(request):
 def logout_view(request):
     logout(request)
     return redirect('accounts:login')
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    form_class = ProfileUpdateForm
+    model = Profile
+    template_name = 'pages/accounts/profile_update.html'
+    context_object_name = 'profile'
+
+    def get_object(self, queryset = None):
+        return self.request.user.profile
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Редактирование профиля: {self.request.user.username}'
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy('accounts:profile')
+    
+    def form_valid(self, form):
+        user = form.save()
+        profile = user
+        profile.avatar = form.cleaned_data.get('avatar')
+        profile.bio = form.cleaned_data.get('bio')
+        profile.phone = form.cleaned_data.get('phone')
+        profile.city = form.cleaned_data.get('city')
+        profile.save()
+        return redirect(self.get_success_url())
+
+class SellerUpdateView(LoginRequiredMixin, SellerRequiredMixin, UpdateView):
+    form_class = SellerProfileUpdateForm
+    model = Seller
+    template_name = 'pages/accounts/seller_update.html'
+    context_object_name = 'seller'
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile.seller
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Редактирование профиля продавца: {self.request.user.profile.username}'
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy('accounts:seller_profile')
 

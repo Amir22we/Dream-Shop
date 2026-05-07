@@ -87,11 +87,16 @@
         <div class="profile-actions">
           <a href="{% url 'accounts:seller_profile' %}" class="profile-btn profile-btn-primary">ПРОФИЛЬ ПРОДАВЦА</a>
         </div>
+        <br>
       {% else %}
         <div class="profile-actions">
           <a href="{% url 'accounts:seller_register' %}" class="profile-btn profile-btn-primary">ЗАРЕГИСТРИРОВАТЬСЯ КАК ПРОДАВЕЦ</a>
         </div>
+        <br>
       {% endif %}
+      <div class="profile-actions">
+        <a href="{% url 'accounts:profile_update' %}" class="profile-btn profile-btn-primary">ИЗМЕНИТЬ ДАННЫЕ АККАунта</a>
+      </div>
     </div>
   </div>
 

@@ -70,3 +70,21 @@ class RegisterSellerForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['product_category'].label = 'категория товаров'
         self.fields['shop_name'].label = 'имя магазина'
+
+class ProfileUpdateForm(forms.ModelForm):
+    avatar = forms.ImageField(label='обнови аву', help_text='только фотки')
+    bio = forms.CharField(label='обнови инфу о себе', widget=forms.Textarea, help_text='все что угодно')
+    phone = forms.CharField(label='обнови номер')
+    city = forms.CharField(label='обнови инфу о городе')
+
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio', 'phone', 'city']
+
+class SellerProfileUpdateForm(forms.ModelForm):
+    shop_name = forms.CharField(label='обновить имя магазина')
+    product_category = forms.CharField(label='измени категорию продуктов')
+
+    class Meta:
+        model = Seller
+        fields = ['shop_name', 'product_category']

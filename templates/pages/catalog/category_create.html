@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Создание категории{% endblock %}
+{% block meta_description %}Создайте новую категорию товаров для магазина Arcane Store.{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts/register_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="register-page">
+
+  <div class="register-hero" data-reveal>
+    <p class="register-eyebrow">Arcane Store</p>
+    <h1 class="register-title" data-reveal data-delay="1">
+      НОВАЯ
+      <span>КАТЕГОРИЯ</span>
+    </h1>
+    <p class="register-subtitle" data-reveal data-delay="2">
+      Заполните ключевые поля и создайте новую категорию товаров.
+    </p>
+  </div>
+
+  <div class="register-wrap" data-reveal data-delay="2">
+    <div class="register-card">
+      <p class="register-card-kicker">Каталог</p>
+      <h2 class="register-card-title">Создание категории</h2>
+
+      <form method="post" enctype="multipart/form-data" novalidate class="register-form" id="categoryCreateForm">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="categoryName" class="form-label">Название</label>
+          <input type="text" id="categoryName" name="name" placeholder="Например, Аксессуары" required>
+        </div>
+
+        <div class="form-group">
+          <label for="categoryDescription" class="form-label">Описание</label>
+          <textarea id="categoryDescription" name="description" placeholder="Коротко опишите категорию"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="categoryImage" class="form-label">Изображение</label>
+          <input type="file" id="categoryImage" name="image" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label for="categoryParent" class="form-label">Родительская категория</label>
+          <select id="categoryParent" name="parent">
+            <option value="">Без родителя</option>
+            {% if categories %}
+              {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>СОЗДАТЬ КАТЕГОРИЮ</span>
+        </button>
+      </form>
+
+      <div class="register-form">
+        <a href="#" class="submit-btn" role="button">ДОБАВИТЬ ТОВАР</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

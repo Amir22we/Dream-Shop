@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Создание товара{% endblock %}
+{% block meta_description %}Добавьте новый товар в каталог Arcane Store.{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts/register_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="register-page">
+
+  <div class="register-hero" data-reveal>
+    <p class="register-eyebrow">Arcane Store</p>
+    <h1 class="register-title" data-reveal data-delay="1">
+      НОВЫЙ
+      <span>ТОВАР</span>
+    </h1>
+    <p class="register-subtitle" data-reveal data-delay="2">
+      Основные параметры товара: название, цена, фото и остаток на складе.
+    </p>
+  </div>
+
+  <div class="register-wrap" data-reveal data-delay="2">
+    <div class="register-card">
+      <p class="register-card-kicker">Каталог</p>
+      <h2 class="register-card-title">Создание товара</h2>
+
+      <form method="post" enctype="multipart/form-data" novalidate class="register-form" id="productCreateForm">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="productName" class="form-label">Название товара</label>
+          <input type="text" id="productName" name="name" placeholder="Например, Кожаный ремень" required>
+        </div>
+
+        <div class="form-group">
+          <label for="productCategory" class="form-label">Категория</label>
+          <select id="productCategory" name="category" required>
+            <option value="">Выберите категорию</option>
+            {% if categories %}
+              {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="productPrice" class="form-label">Цена</label>
+          <input type="number" id="productPrice" name="price" min="0" step="0.01" placeholder="0.00" required>
+        </div>
+
+        <div class="form-group">
+          <label for="productStock" class="form-label">Количество на складе</label>
+          <input type="number" id="productStock" name="stock" min="0" step="1" placeholder="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="productImage" class="form-label">Фотография товара</label>
+          <input type="file" id="productImage" name="image" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label for="productDescription" class="form-label">Описание</label>
+          <textarea id="productDescription" name="description" placeholder="Коротко опишите товар"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="productAvailable">Доступен для продажи</label>
+          <select id="productAvailable" name="avaible">
+            <option value="true">Да</option>
+            <option value="false">Нет</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>СОЗДАТЬ ТОВАР</span>
+        </button>
+      </form>
+
+      <div class="register-form">
+        <a href="#" class="submit-btn" role="button">ДОБАВИТЬ КАТЕГОРИЮ</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+{% endblock %}
