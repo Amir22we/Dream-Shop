@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Дополнительные категории и товары{% endblock %}
+{% block meta_description %}Создайте дополнительные категории и добавьте товары в каталог Arcane Store.{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/pages/accounts/register_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="register-page">
+
+  <div class="register-hero" data-reveal>
+    <p class="register-eyebrow">Arcane Store</p>
+    <h1 class="register-title" data-reveal data-delay="1">
+      ДОПОЛНИТЕЛЬНЫЕ
+      <span>КАТЕГОРИИ И ТОВАРЫ</span>
+    </h1>
+    <p class="register-subtitle" data-reveal data-delay="2">
+      Создавайте новые подкатегории и сразу добавляйте товары в нужный раздел.
+    </p>
+  </div>
+
+  <div class="register-wrap" data-reveal data-delay="2">
+    <div class="register-card">
+      <p class="register-card-kicker">Каталог</p>
+      <h2 class="register-card-title">Дополнительная категория</h2>
+
+      <form method="post" enctype="multipart/form-data" novalidate class="register-form" id="extraCategoryForm">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="category">
+
+        <div class="form-group">
+          <label for="extraCategoryName" class="form-label">Название</label>
+          <input type="text" id="extraCategoryName" name="name" placeholder="Например, Лимитированная серия" required>
+        </div>
+
+        <div class="form-group">
+          <label for="extraCategoryDescription" class="form-label">Описание</label>
+          <textarea id="extraCategoryDescription" name="description" placeholder="Коротко опишите категорию"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="extraCategoryImage" class="form-label">Изображение</label>
+          <input type="file" id="extraCategoryImage" name="image" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label for="extraCategoryParent" class="form-label">Родительская категория</label>
+          <select id="extraCategoryParent" name="parent">
+            <option value="">Без родителя</option>
+            {% if categories %}
+              {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>ДОБАВИТЬ КАТЕГОРИЮ</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="register-wrap" data-reveal data-delay="3">
+    <div class="register-card">
+      <p class="register-card-kicker">Каталог</p>
+      <h2 class="register-card-title">Дополнительный товар</h2>
+
+      <form method="post" enctype="multipart/form-data" novalidate class="register-form" id="extraProductForm">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="product">
+
+        <div class="form-group">
+          <label for="extraProductName" class="form-label">Название товара</label>
+          <input type="text" id="extraProductName" name="name" placeholder="Например, Лимитированные перчатки" required>
+        </div>
+
+        <div class="form-group">
+          <label for="extraProductCategory" class="form-label">Категория</label>
+          <select id="extraProductCategory" name="category" required>
+            <option value="">Выберите категорию</option>
+            {% if categories %}
+              {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="extraProductPrice" class="form-label">Цена</label>
+          <input type="number" id="extraProductPrice" name="price" min="0" step="0.01" placeholder="0.00" required>
+        </div>
+
+        <div class="form-group">
+          <label for="extraProductStock" class="form-label">Количество на складе</label>
+          <input type="number" id="extraProductStock" name="stock" min="0" step="1" placeholder="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="extraProductImage" class="form-label">Фотография товара</label>
+          <input type="file" id="extraProductImage" name="image" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label for="extraProductDescription" class="form-label">Описание</label>
+          <textarea id="extraProductDescription" name="description" placeholder="Коротко опишите товар"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="extraProductAvailable">Доступен для продажи</label>
+          <select id="extraProductAvailable" name="avaible">
+            <option value="true">Да</option>
+            <option value="false">Нет</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>ДОБАВИТЬ ТОВАР</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

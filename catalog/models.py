@@ -41,7 +41,6 @@ class Category(MPTTModel, SluggedModel):
         verbose_name='Родительская категория',
         related_name='children'
     )
-
     class MPTTMeta:
         order_insertion_by = ('name',)
 
@@ -90,7 +89,7 @@ class Product(SluggedModel):
     image = models.ImageField(upload_to='products/', blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
+    product_author = models.CharField(max_length=100, verbose_name='Продавец', null=True)
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'

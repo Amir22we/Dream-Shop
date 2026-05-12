@@ -20,5 +20,10 @@ class ProfileAdmin(admin.ModelAdmin):
     readonly_fields = ['created', 'updated']
 
 @admin.register(Seller)
-class sellerAdmin(admin.ModelAdmin):
-    list_display = ['profile', 'product_category', 'shop_name']
+class SellerAdmin(admin.ModelAdmin):
+    list_display = ['profile', 'get_categories', 'shop_name']
+
+    def get_categories(self, obj):
+        return ', '.join([c.name for c in obj.product_category.all()])
+    
+    get_categories.short_description = 'Категории'

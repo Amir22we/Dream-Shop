@@ -54,8 +54,9 @@
   <div class="seller-card" data-reveal data-delay="3">
     <h2 class="seller-subtitle">Управление</h2>
     <div class="register-form">
-      <a href="#" class="submit-btn" role="button">ИЗМЕНИТЬ ДАННЫЕ МАГАЗИНА</a>
-      <a href="#" class="submit-btn" role="button">ДОБАВИТЬ КАТЕГОРИЮ</a>
+      <a href="{% url 'accounts:seller_update' %}" class="submit-btn" role="button">ИЗМЕНИТЬ ДАННЫЕ МАГАЗИНА</a>
+      <a href="{% url 'seller_profile:category_create' %}" class="submit-btn" role="button">ДОБАВИТЬ КАТЕГОРИЮ</a>
+      <a href="#" class="submit-btn" role="button">ПРОСМОТР КАТЕГОРИЙ</a>
     </div>
   </div>
 

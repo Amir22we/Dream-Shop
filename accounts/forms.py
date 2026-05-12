@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Profile, Seller
 from datetime import date 
-
+from catalog.models import Category
 class UserRegisterForm(UserCreationForm):
     avatar = forms.ImageField(label='ава', help_text='только фотки')
     bio = forms.CharField(label='инфа о себе', widget=forms.Textarea, help_text='все что угодно')
@@ -60,7 +60,7 @@ class UserLoginForm(AuthenticationForm):
         self.fields['password'].label = 'пароль'
 
 class RegisterSellerForm(forms.ModelForm):
-    product_category = forms.CharField(max_length=100)
+    product_category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='выбери категорию')
     shop_name = forms.CharField(max_length=100)
     class Meta:
         model = Seller

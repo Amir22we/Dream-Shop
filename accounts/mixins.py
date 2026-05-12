@@ -21,9 +21,9 @@ class LoginRequiredMixin(AccessMixin):
         return super().dispatch(request, *args, **kwargs)
     
 class SellerRequiredMixin(AccessMixin):
-    redirect_url = 'accounts:profile_update'
+    redirect_url = 'accounts:seller_register'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.profile.seller.is_approved:
+        if not request.user.profile.seller.is_approved:
             return redirect(self.redirect_url)
         return super().dispatch(request, *args, **kwargs)

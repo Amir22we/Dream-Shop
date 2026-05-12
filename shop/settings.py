@@ -41,12 +41,13 @@ INSTALLED_APPS = [
     # Apps
     'catalog',
     'accounts',
+    'seller_profile',
     
     # Django-Apps
     'taggit',
     'mptt',
     'django_mptt_admin',
-    
+    'schema_viewer',
 ]
 
 MIDDLEWARE = [

@@ -103,20 +103,26 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         profile.save()
         return redirect(self.get_success_url())
 
-class SellerUpdateView(LoginRequiredMixin, SellerRequiredMixin, UpdateView):
+class SellerUpdateView(SellerRequiredMixin, UpdateView):
     form_class = SellerProfileUpdateForm
     model = Seller
     template_name = 'pages/accounts/seller_update.html'
     context_object_name = 'seller'
-
     def get_object(self, queryset=None):
         return self.request.user.profile.seller
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = f'Редактирование профиля продавца: {self.request.user.profile.username}'
+        context['title'] = f'Редактирование профиля продавца: {self.request.user.username}'
         return context
     
     def get_success_url(self):
         return reverse_lazy('accounts:seller_profile')
 
+    def form_valid(self, form):
+        profile, _ = Profile.objects.get_or_create(user=self.request.user)
+        seller = form.save(commit=False)
+        seller.profile = profile
+        seller.save()
+        self.object = seller
+        return redirect(self.get_success_url())        

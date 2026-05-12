@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from catalog.models import Category
 class Profile(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name='profile', verbose_name='Пользователь')
     avatar = models.ImageField(upload_to='accounts/', blank=True, default='media/category/Снимок_экрана_2026-03-29_14-53-20.png', verbose_name='ава')
@@ -19,11 +19,10 @@ class Profile(models.Model):
         return Seller.objects.filter(profile=self).exists
     
 class Seller(models.Model):
-    profile = models.OneToOneField(to=Profile, on_delete=models.CASCADE, related_name='seller', verbose_name='Продовец')
-    product_category = models.CharField(max_length=100, blank=True,  verbose_name='Категория товаров')
+    profile = models.OneToOneField(to=Profile, on_delete=models.CASCADE, related_name='seller', verbose_name='Продавец')
+    product_category = models.ManyToManyField(Category, related_name='sellers', blank=True)
     shop_name = models.CharField(max_length=100, blank=True, verbose_name='Название магазина')  
     is_approved = models.BooleanField(null=True, default=False)
-
     def __str__(self):
         return str(self.profile)
     
