@@ -34,7 +34,7 @@
           <!-- ── Корневая категория ────────────────────────────── -->
           {% if node.is_leaf_node %}
             {# Нет детей — сразу в товары #}
-            <a href="{% url 'catalog:product_list' %}?category={{ node.slug }}"
+            <a href="{% url 'catalog:category-child' slug=node.slug %}"
                class="root-cat-card" style="text-decoration:none;">
           {% else %}
             {# Есть дети — на страницу подкатегорий #}

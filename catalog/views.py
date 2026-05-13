@@ -56,6 +56,6 @@ class ChildCategoryView(ListView):
         context = super().get_context_data(**kwargs)
         category = self.get_category()
         context['category'] = category
-        context['breadcrumps'] = category.get_ancestors(include_self=True)
+        context['breadcrumbs'] = category.get_ancestors(include_self=True)
         context['has_children'] = category.get_children().exists()
         return context
