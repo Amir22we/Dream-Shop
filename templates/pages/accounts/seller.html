@@ -27,7 +27,16 @@
 
     {% if seller_profile %}
       <p><strong>Название магазина:</strong> {{ seller_profile.shop_name|default:"Не указано" }}</p>
-      <p><strong>Категория товаров:</strong> {{ seller_profile.product_category|default:"Не указана" }}</p>
+      <p><strong>Категория товаров:</strong></p>
+      {% if seller_profile.product_category.exists %}
+        <ul>
+          {% for category in seller_profile.product_category.all %}
+            <li>{{ category }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Не указана</p>
+      {% endif %}
       <p>
         <strong>Статус заявки:</strong>
         {% if seller_profile.is_approved is True %}
@@ -56,7 +65,7 @@
     <div class="register-form">
       <a href="{% url 'accounts:seller_update' %}" class="submit-btn" role="button">ИЗМЕНИТЬ ДАННЫЕ МАГАЗИНА</a>
       <a href="{% url 'seller_profile:category_create' %}" class="submit-btn" role="button">ДОБАВИТЬ КАТЕГОРИЮ</a>
-      <a href="#" class="submit-btn" role="button">ПРОСМОТР КАТЕГОРИЙ</a>
+      <a href="{% url 'seller_profile:product_create' %}" class="submit-btn" role="button">ДОБАВИТЬ ТОВАРЫ В КАТЕГОРИЮ</a>
     </div>
   </div>
 

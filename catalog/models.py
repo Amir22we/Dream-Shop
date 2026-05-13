@@ -89,7 +89,7 @@ class Product(SluggedModel):
     image = models.ImageField(upload_to='products/', blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    product_author = models.CharField(max_length=100, verbose_name='Продавец', null=True)
+    seller = models.ForeignKey('accounts.Seller', on_delete=models.CASCADE)
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'

@@ -60,15 +60,13 @@ class UserLoginForm(AuthenticationForm):
         self.fields['password'].label = 'пароль'
 
 class RegisterSellerForm(forms.ModelForm):
-    product_category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='выбери категорию')
     shop_name = forms.CharField(max_length=100)
     class Meta:
         model = Seller
-        fields = ['product_category', 'shop_name']
+        fields = ['shop_name']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['product_category'].label = 'категория товаров'
         self.fields['shop_name'].label = 'имя магазина'
 
 class ProfileUpdateForm(forms.ModelForm):
@@ -83,8 +81,7 @@ class ProfileUpdateForm(forms.ModelForm):
 
 class SellerProfileUpdateForm(forms.ModelForm):
     shop_name = forms.CharField(label='обновить имя магазина')
-    product_category = forms.CharField(label='измени категорию продуктов')
 
     class Meta:
         model = Seller
-        fields = ['shop_name', 'product_category']
+        fields = ['shop_name']
