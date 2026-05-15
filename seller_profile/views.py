@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from catalog.models import Category, Product
 from .forms import CategoryCreateForm, CategorySelectForm, ProductCreateForm
 from catalog.models import Category
-from django.views.generic import CreateView, ListView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 from accounts.mixins import SellerRequiredMixin
 from django.urls import reverse_lazy
 
@@ -50,4 +50,21 @@ class ProductCreateView(SellerRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.seller = self.request.user.profile.seller
         return super().form_valid(form)
+
+class ProductsCreatedBySellerView(SellerRequiredMixin, ListView):
+    model = Product
+    template_name = 'pages/catalog/product_list.html'
+    context_object_name = 'products'
+    paginate_by = 12
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Список всех товаров продавца: {self.request.user.profile}'
+        page = context['page_obj']
+        context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(seller=self.request.user.profile.seller)
     

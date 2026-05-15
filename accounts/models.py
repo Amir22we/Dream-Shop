@@ -23,6 +23,7 @@ class Seller(models.Model):
     product_category = models.ManyToManyField(Category, related_name='sellers', blank=True)
     shop_name = models.CharField(max_length=100, blank=True, verbose_name='Название магазина')  
     is_approved = models.BooleanField(null=True, default=False)
+    
     def __str__(self):
         return str(self.profile)
     

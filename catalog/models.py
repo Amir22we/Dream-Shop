@@ -81,7 +81,7 @@ class Product(SluggedModel):
         verbose_name='Категория'
         )
     # tags = TaggableManager(verbose_name='Теги')
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, null=True)
     description = models.TextField(blank=True, max_length=5000, verbose_name='Описание')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     stock = models.PositiveIntegerField(verbose_name='Количество на складе')
