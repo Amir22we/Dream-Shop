@@ -88,19 +88,30 @@
           {% endif %}
 
           <!-- Out of stock -->
-          {% if not product.avaible or product.stock == 0 %}
-            <div class="card-out-of-stock">
-              <span>Нет в наличии</span>
-            </div>
-          {% endif %}
 
-          <!-- Hover overlay (только если есть в наличии) -->
-          {% if product.avaible and product.stock > 0 %}
-            <div class="card-overlay">
-              <button class="overlay-cart-btn">В КОРЗИНУ</button>
-            </div>
-          {% endif %}
+          {% if request.user.profile.is_seller %}
+            {% if product.stock == 0 %}
+              <div class="card-out-of-stock">
+                <span>Не осталось на складе</span>
+                <ul>
+                {% for product in out_of_stock %}
+                  <li>{{ product.name }}</li>
+                </ul>
+                {% endfor %}
+              </div>
+            {% endif %}
 
+            {% if not product.avaible %}
+              <div class="card-out-of-stock">
+                <span>Не доступные для пользователей продукты</span>
+                <ul>
+                {% for product in not_avaible %}
+                  <li>{{ product.name }}</li>
+                {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          {% endif %}
         </div>
 
         <!-- Info -->

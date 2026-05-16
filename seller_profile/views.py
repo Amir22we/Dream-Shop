@@ -62,6 +62,8 @@ class ProductsCreatedBySellerView(SellerRequiredMixin, ListView):
         context['title'] = f'Список всех товаров продавца: {self.request.user.profile}'
         page = context['page_obj']
         context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
+        context['out_of_stock'] = Product.objects.filter(stock=0)
+        context['not_avaible'] = Product.objects.filter(avaible=False)
         return context
     
     def get_queryset(self):

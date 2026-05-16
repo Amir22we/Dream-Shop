@@ -16,7 +16,7 @@ class Profile(models.Model):
 
     @property
     def is_seller(self):
-        return Seller.objects.filter(profile=self).exists
+        return Seller.objects.filter(profile=self).exists()
     
 class Seller(models.Model):
     profile = models.OneToOneField(to=Profile, on_delete=models.CASCADE, related_name='seller', verbose_name='Продавец')
